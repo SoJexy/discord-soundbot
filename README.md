@@ -1,7 +1,7 @@
-Discord Soundbot
+FORKED Discord Soundbot
 ================
 
-A Bot for Discord to play your favorite sounds or music.
+A Bot for Discord to play your favorite sounds or music. Forked to make the bot never leave the channel unless redirected or ordered to leave. This removes the annoying discord connection/disconnect sounds
 
 ## Usage
 
@@ -43,6 +43,7 @@ Type `!commands` to print the following list of available commands.
 !add                   Add the attached sound
 !rename <old> <new>    Rename specified sound
 !remove <sound>        Remove specified sound
+!disconnect			   Removes the bot from the voice channel
 ```
 
 ### Adding sounds

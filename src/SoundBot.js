@@ -32,22 +32,33 @@ class SoundBot extends Discord.Client {
     this.queue.push({ name: sound, channel: voiceChannel, message: messageTrigger });
   }
 
+  disconnectFromChannel() {
+    if (this.connection != undefined)
+      this.connection.disconnect();
+  }
+
   playSoundQueue() {
     const nextSound = this.queue.shift();
     const file = Util.getPathForSound(nextSound.name);
     const voiceChannel = this.channels.get(nextSound.channel);
 
     voiceChannel.join().then((connection) => {
+      this.connection = connection;
       const dispatcher = connection.playFile(file);
+      dispatcher.on('speaking', () => {
+        this.isSpeaking = true;
+      })
       dispatcher.on('end', () => {
         Util.updateCount(nextSound.name);
         if (config.get('deleteMessages') === true)
           nextSound.message.delete();
 
-        if (this.queue.length > 0)
+        if (this.queue.length > 0) {
+          this.isSpeaking = true;
           this.playSoundQueue();
-        else
-          connection.disconnect();
+        } else {
+          this.isSpeaking = false;
+        }
       });
     }).catch((error) => {
       console.log('Error occured!');

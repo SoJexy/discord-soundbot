@@ -43,7 +43,7 @@ Type `!commands` to print the following list of available commands.
 !add                   Add the attached sound
 !rename <old> <new>    Rename specified sound
 !remove <sound>        Remove specified sound
-!disconnect			   Removes the bot from the voice channel
+!disconnect            Removes the bot from the voice channel
 ```
 
 ### Adding sounds

@@ -48,14 +48,22 @@ class MessageHandler {
         } else if (message.content === '!random') {
           const random = sounds[Math.floor(Math.random() * sounds.length)];
           this.bot.addToQueue(voiceChannel.id, random, message);
+          if (config.get('stayInChannel') === true) {
             if (!this.bot.isSpeaking)
               this.bot.playSoundQueue();
+          } else {
+            if (this.bot.voiceConnections.array().length === 0) this.bot.playSoundQueue();
+          }
         } else {
           const sound = message.content.split('!')[1];
           if (sounds.includes(sound)) {
             this.bot.addToQueue(voiceChannel.id, sound, message);
-            if (!this.bot.isSpeaking)
-              this.bot.playSoundQueue();
+            if (config.get('stayInChannel') === true) {
+              if (!this.bot.isSpeaking)
+                this.bot.playSoundQueue();
+            } else {
+              if (this.bot.voiceConnections.array().length === 0) this.bot.playSoundQueue();
+            }
           }
         }
       }

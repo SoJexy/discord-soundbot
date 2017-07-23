@@ -43,21 +43,31 @@ class SoundBot extends Discord.Client {
     const voiceChannel = this.channels.get(nextSound.channel);
 
     voiceChannel.join().then((connection) => {
-      this.connection = connection;
       const dispatcher = connection.playFile(file);
-      dispatcher.on('speaking', () => {
-        this.isSpeaking = true;
-      })
+      if (config.get('stayInChannel') === true) {
+          this.connection = connection;
+        dispatcher.on('speaking', () => {
+          this.isSpeaking = true;
+        })
+      }
       dispatcher.on('end', () => {
         Util.updateCount(nextSound.name);
         if (config.get('deleteMessages') === true)
           nextSound.message.delete();
 
-        if (this.queue.length > 0) {
-          this.isSpeaking = true;
-          this.playSoundQueue();
+        if (config.get('stayInChannel') === true) {
+          if (this.queue.length > 0) {
+            this.isSpeaking = true;
+            this.playSoundQueue();
+          } else {
+            this.isSpeaking = false;
+          }
         } else {
-          this.isSpeaking = false;
+          if (this.queue.length > 0) {
+            this.playSoundQueue();
+          } else {
+            connection.disconnect();
+          }
         }
       });
     }).catch((error) => {
@@ -65,6 +75,7 @@ class SoundBot extends Discord.Client {
       console.log(error);
     });
   }
+
 }
 
 module.exports = new SoundBot();
